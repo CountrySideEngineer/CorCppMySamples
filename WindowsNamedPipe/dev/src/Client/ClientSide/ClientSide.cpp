@@ -18,7 +18,7 @@ using namespace std;
 
 int main()
 {
-    int nRetCode = 0;
+     int nRetCode = 0;
 
     HMODULE hModule = ::GetModuleHandle(nullptr);
 
@@ -54,29 +54,34 @@ int main()
                 int maxLoopNum = 13;
 
                 while (1) {
-                    _TCHAR buffer[256];
+                    BYTE buffer[256];
                     ZeroMemory(buffer, sizeof(buffer));
-                    DWORD writtenWordSize = 0;
-                    DWORD numberOfByteToWrite = 0;
+
                     BOOL isExitFlag = FALSE;
+
+                    //Set data to send.
+                    LPWORD bufferToSet = (LPWORD)buffer;
                     if (loopCount < maxLoopNum) {
-                        _stprintf_s(buffer, _T("CLIENT SEND DATA = %d"), loopCount);
-                        numberOfByteToWrite = _tcsclen(buffer) * sizeof(TCHAR);
+                        *bufferToSet = (WORD)(loopCount + 1);
                         isExitFlag = FALSE;
                     }
                     else {
-                        buffer[0] = 0;
-                        numberOfByteToWrite = sizeof(_TCHAR);
+                        *bufferToSet = (WORD)0;
                         isExitFlag = true;
                     }
-                    _tprintf(_T("Send data len : %d\r\n"), numberOfByteToWrite);
+                    bufferToSet++;
+                    *bufferToSet = (WORD)0xFFFF;
+                    bufferToSet++;
+                    *bufferToSet = (WORD)0xFFFF;
+                    DWORD writtenByteSize = 0;
+                    DWORD numberOfByteToWrite = 6;
                     SetEvent(hEvent);
-                    BOOL writeRes = WriteFile(hPipe, buffer, numberOfByteToWrite, (LPDWORD)&writtenWordSize, NULL);
+                    BOOL writeRes = WriteFile(hPipe, buffer, numberOfByteToWrite, (LPDWORD)&writtenByteSize, NULL);
                     if (!writeRes) {
                         _tprintf(_T("Can not write data into file.\r\n"));
-                    }
+                     }
                     else {
-                        _tprintf(_T("Can write data into file.(data size = %d)\r\n"), writtenWordSize);
+                        _tprintf(_T("Can write data into file.(data size = %d)\r\n"), writtenByteSize);
                     }
 
                     if (FALSE != isExitFlag) {

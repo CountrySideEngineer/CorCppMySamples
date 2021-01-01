@@ -91,7 +91,7 @@ int main()
 
 DWORD WINAPI    ServerThreadProc(LPVOID threadParam)
 {
-    _TCHAR  readBuffer[256];
+    BYTE  readBuffer[256];
     DWORD   readBufferSizeInByte = sizeof(readBuffer);
     ZeroMemory(readBuffer, readBufferSizeInByte);
 
@@ -109,7 +109,10 @@ DWORD WINAPI    ServerThreadProc(LPVOID threadParam)
             break;
         }
         else {
-            _tprintf(_T("Read data : %s\r\n"), readBuffer);
+            for (int index = 0; index < readDataSize; index++) {
+                _tprintf(_T("0x%02x "), readBuffer[index]);
+            }
+            _tprintf(_T("\r\n"));
         }
 
         if (0 == readBuffer[0]) {
