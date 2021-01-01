@@ -33,6 +33,11 @@ int main()
         }
         else
         {
+            HANDLE hEvent = OpenEvent(EVENT_ALL_ACCESS, FALSE, _T("IPC_SAMPLE"));
+            if (NULL == hEvent) {
+                _tprintf(_T("Error event open.\r\n"));
+                return (-1);
+            }
             HANDLE hPipe = CreateFile(_T("\\\\.\\pipe\\sample_pipe"),
                 GENERIC_WRITE,
                 0, 
@@ -41,19 +46,31 @@ int main()
                 FILE_ATTRIBUTE_NORMAL, 
                 NULL);
             if (INVALID_HANDLE_VALUE == hPipe) {
-                _tprintf(_T("Can not create file, as PIPE\r\n"));
+                 _tprintf(_T("Can not create file, as PIPE\r\n"));
             }
             else {
                 _tprintf(_T("Can create file, as PIPE\r\n"));
                 int loopCount = 0;
-                int maxLoopNum = 5;
-                do {
+                int maxLoopNum = 13;
+
+                while (1) {
                     _TCHAR buffer[256];
                     ZeroMemory(buffer, sizeof(buffer));
-                    _stprintf_s(buffer, _T("CLIENT SEND DATA = %d"), loopCount);
                     DWORD writtenWordSize = 0;
-                    DWORD numberOfByteToWrite = _tcsclen(buffer) * sizeof(TCHAR);
+                    DWORD numberOfByteToWrite = 0;
+                    BOOL isExitFlag = FALSE;
+                    if (loopCount < maxLoopNum) {
+                        _stprintf_s(buffer, _T("CLIENT SEND DATA = %d"), loopCount);
+                        numberOfByteToWrite = _tcsclen(buffer) * sizeof(TCHAR);
+                        isExitFlag = FALSE;
+                    }
+                    else {
+                        buffer[0] = 0;
+                        numberOfByteToWrite = sizeof(_TCHAR);
+                        isExitFlag = true;
+                    }
                     _tprintf(_T("Send data len : %d\r\n"), numberOfByteToWrite);
+                    SetEvent(hEvent);
                     BOOL writeRes = WriteFile(hPipe, buffer, numberOfByteToWrite, (LPDWORD)&writtenWordSize, NULL);
                     if (!writeRes) {
                         _tprintf(_T("Can not write data into file.\r\n"));
@@ -61,12 +78,22 @@ int main()
                     else {
                         _tprintf(_T("Can write data into file.(data size = %d)\r\n"), writtenWordSize);
                     }
-                    loopCount++;
+
+                    if (FALSE != isExitFlag) {
+                        break;
+                    }
 
                     Sleep(100);
-                } while (loopCount < maxLoopNum);
+                    loopCount++;
+                }
+
+                CloseHandle(hPipe);
+                _tprintf(_T("Wait for event.\r\n"));
+                WaitForSingleObject(hEvent, INFINITE);
+
+                _tprintf(_T("Event is activated.\r\n"));
             }
-            CloseHandle(hPipe);
+            CloseHandle(hEvent);
             // TODO: アプリケーションの動作を記述するコードをここに挿入してください。
         }
     }
@@ -78,4 +105,4 @@ int main()
     }
 
     return nRetCode;
-}
+ }
