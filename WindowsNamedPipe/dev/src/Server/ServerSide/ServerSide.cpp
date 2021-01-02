@@ -46,7 +46,7 @@ int main()
             while (recvCount < 10) {
                 pipeHandles.hPipe = INVALID_HANDLE_VALUE;
                 pipeHandles.hPipe = CreateNamedPipe(_T("\\\\.\\pipe\\sample_pipe"),
-                    PIPE_ACCESS_INBOUND,
+                    PIPE_ACCESS_DUPLEX,
                     PIPE_TYPE_BYTE | PIPE_WAIT,
                     1,
                     0,
@@ -91,9 +91,11 @@ int main()
 
 DWORD WINAPI    ServerThreadProc(LPVOID threadParam)
 {
-    BYTE  readBuffer[256];
+    BYTE    readBuffer[256];
+    BYTE    sendBuffer[256];
     DWORD   readBufferSizeInByte = sizeof(readBuffer);
     ZeroMemory(readBuffer, readBufferSizeInByte);
+    ZeroMemory(sendBuffer, sizeof(sendBuffer));
 
     PPIPE_HANDLES   pipeHandles = (PPIPE_HANDLES)threadParam;
     int loopCount = 0;
@@ -108,14 +110,37 @@ DWORD WINAPI    ServerThreadProc(LPVOID threadParam)
             _tprintf(_T("Can not read data.\r\n"));
             break;
         }
-        else {
-            for (int index = 0; index < readDataSize; index++) {
-                _tprintf(_T("0x%02x "), readBuffer[index]);
-            }
-            _tprintf(_T("\r\n"));
+
+        //Copy read data into a buffer to keep send(response) data.
+        for (int index = 0; index < readDataSize; index++) {
+            sendBuffer[index] = readBuffer[index];
         }
 
-        if (0 == readBuffer[0]) {
+        //Update response data.
+        LPWORD bufferToSend = (LPWORD)sendBuffer;
+        (*bufferToSend)++;
+
+        //Sleep(10);
+
+        SetEvent(pipeHandles->hEvent);
+        DWORD writtenDataSize = 0;
+        BOOL writeResult = WriteFile(pipeHandles->hPipe, sendBuffer, readDataSize, (LPDWORD)&writtenDataSize, NULL);
+
+        //Show received and sent data in buffers.
+        _tprintf(_T("Rcv : "));
+        for (int index = 0; index < readDataSize; index++) {
+            _tprintf(_T("0x%02X "), readBuffer[index]);
+        }
+        _tprintf(_T("\r\n"));
+        _tprintf(_T("Snd : "));
+        for (int index = 0; index < writtenDataSize; index++) {
+            _tprintf(_T("0x%02X "), sendBuffer[index]);
+        }
+        _tprintf(_T("\r\n"));
+
+        WORD topData = (WORD)(*(LPBYTE)(&readBuffer[0]));
+        if (0 == topData) {
+            _tprintf(_T("End data received.(0x%04x)\r\n"), topData);
             break;
         }
     }

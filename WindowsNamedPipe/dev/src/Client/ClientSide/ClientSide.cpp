@@ -39,7 +39,7 @@ int main()
                 return (-1);
             }
             HANDLE hPipe = CreateFile(_T("\\\\.\\pipe\\sample_pipe"),
-                GENERIC_WRITE,
+                GENERIC_WRITE | GENERIC_READ,
                 0, 
                 NULL, 
                 OPEN_EXISTING, 
@@ -51,18 +51,18 @@ int main()
             else {
                 _tprintf(_T("Can create file, as PIPE\r\n"));
                 int loopCount = 0;
-                int maxLoopNum = 13;
+                int maxLoopNum = 200;
 
                 while (1) {
-                    BYTE buffer[256];
-                    ZeroMemory(buffer, sizeof(buffer));
+                    BYTE sendBuffer[256];
+                    ZeroMemory(sendBuffer, sizeof(sendBuffer));
 
                     BOOL isExitFlag = FALSE;
 
                     //Set data to send.
-                    LPWORD bufferToSet = (LPWORD)buffer;
+                    LPWORD bufferToSet = (LPWORD)sendBuffer;
                     if (loopCount < maxLoopNum) {
-                        *bufferToSet = (WORD)(loopCount + 1);
+                        *bufferToSet = (WORD)((loopCount * 2) + 1);
                         isExitFlag = FALSE;
                     }
                     else {
@@ -73,22 +73,42 @@ int main()
                     *bufferToSet = (WORD)0xFFFF;
                     bufferToSet++;
                     *bufferToSet = (WORD)0xFFFF;
+
                     DWORD writtenByteSize = 0;
                     DWORD numberOfByteToWrite = 6;
                     SetEvent(hEvent);
-                    BOOL writeRes = WriteFile(hPipe, buffer, numberOfByteToWrite, (LPDWORD)&writtenByteSize, NULL);
+                    BOOL writeRes = WriteFile(hPipe, sendBuffer, numberOfByteToWrite, (LPDWORD)&writtenByteSize, NULL);
                     if (!writeRes) {
                         _tprintf(_T("Can not write data into file.\r\n"));
-                     }
+                    }
+                    WaitForSingleObject(hEvent, INFINITE);
+                    BYTE recvBuffer[256] = { 0 };
+                    DWORD readDataSize = 0;
+                    BOOL readRes = ReadFile(hPipe, recvBuffer, sizeof(recvBuffer), (LPDWORD)&readDataSize, NULL);
+                    ResetEvent(hEvent);
+                    if (FALSE == readRes) {
+                        _tprintf(_T("Can not receive da ta.\r\n"));
+                        break;
+                    }
                     else {
-                        _tprintf(_T("Can write data into file.(data size = %d)\r\n"), writtenByteSize);
+                        //Show sent and received data buffers.
+                        _tprintf(_T("Snd : "));
+                        for (int index = 0; index < writtenByteSize; index++) {
+                            _tprintf(_T("0x%02X "), sendBuffer[index]);
+                        }
+                        _tprintf(_T("\r\n"));
+                        _tprintf(_T("Rcv : "));
+                        for (int index = 0; index < readDataSize; index++) {
+                            _tprintf(_T("0x%02X "), recvBuffer[index]);
+                        }
+                        _tprintf(_T("\r\n"));
                     }
 
                     if (FALSE != isExitFlag) {
                         break;
                     }
 
-                    Sleep(100);
+                    Sleep(1);
                     loopCount++;
                 }
 
