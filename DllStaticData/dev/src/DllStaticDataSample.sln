@@ -6,8 +6,14 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DllStaticDataSample", "DllStaticDataSample\DllStaticDataSample.vcxproj", "{DEE698EC-B193-4914-A10E-DF3509B46F2F}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DllStaticDataGetter", "DllStaticDataGetter\DllStaticDataGetter.vcxproj", "{F315450A-8546-4459-B7D3-CF4353A10943}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DEE698EC-B193-4914-A10E-DF3509B46F2F} = {DEE698EC-B193-4914-A10E-DF3509B46F2F}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DllStaticDataSetter", "DllStaticDataSetter\DllStaticDataSetter.vcxproj", "{4E76DAC8-3CC0-4D41-9818-47F498FC91E2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F315450A-8546-4459-B7D3-CF4353A10943} = {F315450A-8546-4459-B7D3-CF4353A10943}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
