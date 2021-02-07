@@ -1,0 +1,11 @@
+﻿; DllStaticDataSample.def : DLL のモジュール パラメーターを宣言します。
+
+LIBRARY
+
+EXPORTS
+    ; 明示的なエクスポートはここへ記述できます
+    SetNoneStaticBuffer     @1
+    GetNoneStaticBuffer     @2
+    SetStaticBuffer         @3
+    GetStaticBuffer         @4
+    FinalizeDll             @5
