@@ -19,25 +19,6 @@ VOID GetStaticData()
 	_tprintf(_T("\n"));
 }
 
-VOID GetNoneStaticData()
-{
-	BYTE buffer[100] = { 0 };
-
-	GetNoneStaticBuffer(buffer, 100);
-
-	_tprintf(_T("SHOW NONE STATIC BUFFER :\n"));
-	for (int index = 0; index < 100; index++) {
-		_tprintf(_T("0x%02X"), buffer[index]);
-		if ((0 != index) && (0 == ((index + 1) % 16))) {
-			_tprintf(_T("\n"));
-		}
-		else {
-			_tprintf(_T(", "));
-		}
-	}
-	_tprintf(_T("\n"));
-}
-
 VOID DllStaticDataGetterFunc()
 {
 	for (int index = 0; index < 100; index++) {

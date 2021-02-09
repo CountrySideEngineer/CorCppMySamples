@@ -50,26 +50,6 @@ VOID WINAPI	FinalizeDll()
 	}
 }
 
-BYTE* WINAPI	SetNoneStaticBuffer(BYTE* buffer, BYTE bufferSize)
-{
-	AFX_MANAGE_STATE(AfxGetStaticModuleState());
-
-	for (BYTE index = 0; index < bufferSize; index++) {
-		NoneStaticBuffer[index] = buffer[index];
-	}
-	return NoneStaticBuffer;
-}
-
-BYTE* WINAPI	GetNoneStaticBuffer(BYTE* buffer, BYTE bufferSize)
-{
-	AFX_MANAGE_STATE(AfxGetStaticModuleState());
-
-	for (BYTE index = 0; index < bufferSize; index++) {
-		buffer[index] = NoneStaticBuffer[index];
-	}
-	return NoneStaticBuffer;
-}
-
 BYTE* WINAPI	SetStaticBuffer(BYTE* buffer, BYTE bufferSize)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState());
