@@ -27,10 +27,12 @@ int main()
     srand((unsigned int)time(NULL));
 
     do {
+        loopCount++;
+
         LONG index = rand() % DATA_SIZE;
         (AppearTable[index])++;
         if (1 < AppearTable[index]) {
-            _tprintf(_T("DUPLICATED : %5d\n"), index);
+            //_tprintf(_T("DUPLICATED : %5d\n"), index);
             continue;
         }
 
