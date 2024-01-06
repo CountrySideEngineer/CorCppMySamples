@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DoxygenSamples.cpp">
+    <ClCompile Include="DoxygenSample_001.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>

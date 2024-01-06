@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{89c663c7-5a02-4687-a1ab-640ab41303ea}</ProjectGuid>
-    <RootNamespace>DoxygenSamples</RootNamespace>
+    <ProjectGuid>{f8808fa9-3a0d-40cc-8ff6-852ec8835016}</ProjectGuid>
+    <RootNamespace>DoxygenSample001</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -127,7 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="DoxygenSamples.cpp" />
+    <ClCompile Include="DoxygenSample_001.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
