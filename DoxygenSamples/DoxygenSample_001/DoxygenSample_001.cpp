@@ -1,20 +1,28 @@
-﻿// DoxygenSample_001.cpp : このファイルには 'main' 関数が含まれています。プログラム実行の開始と終了がそこで行われます。
-//
-
+﻿/**
+ * @file	DoxygenSample_001.cpp
+ * @brief	Sample file to use doxygen.
+ * @author	CountrySideEngineer
+ * @cpoyright	Copyright 2024 CountrySideEngineer. All right reserved.
+ * @license	This program is released under MIT license.
+ */
 #include <iostream>
+#include <Windows.h>
+#include <tchar.h>
 
+int SubFunction_001(int input1, int input2);
+
+/**
+ * @fn	main
+ * @brief	Program entry point.
+ */
 int main()
 {
-    std::cout << "Hello World!\n";
+	int input1 = 1;
+	int input2 = 2;
+
+	int result = SubFunction_001(input1, input2);
+
+	_tprintf(_T("Result of SubFunction_001 is %d\n"), result);
+
+	return 0;
 }
-
-// プログラムの実行: Ctrl + F5 または [デバッグ] > [デバッグなしで開始] メニュー
-// プログラムのデバッグ: F5 または [デバッグ] > [デバッグの開始] メニュー
-
-// 作業を開始するためのヒント: 
-//    1. ソリューション エクスプローラー ウィンドウを使用してファイルを追加/管理します 
-//   2. チーム エクスプローラー ウィンドウを使用してソース管理に接続します
-//   3. 出力ウィンドウを使用して、ビルド出力とその他のメッセージを表示します
-//   4. エラー一覧ウィンドウを使用してエラーを表示します
-//   5. [プロジェクト] > [新しい項目の追加] と移動して新しいコード ファイルを作成するか、[プロジェクト] > [既存の項目の追加] と移動して既存のコード ファイルをプロジェクトに追加します
-//   6. 後ほどこのプロジェクトを再び開く場合、[ファイル] > [開く] > [プロジェクト] と移動して .sln ファイルを選択します
