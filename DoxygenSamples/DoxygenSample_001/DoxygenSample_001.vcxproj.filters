@@ -21,5 +21,8 @@
     <ClCompile Include="SubCode_001_01.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="SubCode_002_01.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
