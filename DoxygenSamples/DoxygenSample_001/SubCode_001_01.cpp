@@ -2,8 +2,8 @@
  * @file	DoxygenSample_001.cpp
  * @brief	Sample file to use doxygen.
  * @author	CountrySideEngineer
- * @cpoyright	Copyright 2024 CountrySideEngineer. All right reserved.
- * @license	This program is released under MIT license.
+ * @copyright	Copyright 2024 CountrySideEngineer. All right reserved.
+ *				This program is released under MIT license.
  */
 #include <iostream>
 #include <Windows.h>
@@ -12,7 +12,7 @@
 int SubFunction_002_01(int input_002_01);
 
 /**
- * @fn	SubFunction_001
+ * @fn	SubFunction_001_01
  * @brief	Sample function No.001.
  * 
  * @param	input1	Input value 1.

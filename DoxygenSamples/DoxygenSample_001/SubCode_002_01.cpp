@@ -1,9 +1,9 @@
 /**
- * @file	SubCode_001_02.cpp
+ * @file	SubCode_002_01.cpp
  * @brief	Sample file which implements sub functions.
  * @author	CountrySideEngineer
- * @cpoyright	Copyright 2024 CountrySideEngineer. All right reserved.
- * @license	This program is released under MIT license.
+ * @copyright	Copyright 2024 CountrySideEngineer. All right reserved.
+ *				This program is released under MIT license.
  */
 #include <iostream>
 #include <Windows.h>
