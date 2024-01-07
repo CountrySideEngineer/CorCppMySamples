@@ -30,7 +30,7 @@ int SubFunction_001_01(int input1, int input2)
  */
 void SubFunction_001_02(void)
 {
-	_tprintf(_T("Thsi is sample functino No. 2."));
+	_tprintf(_T("This is sample functino No. 2."));
 	return;
 }
 
