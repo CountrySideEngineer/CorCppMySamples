@@ -143,6 +143,9 @@
     <ClCompile Include="SubCode_001_01.cpp" />
     <ClCompile Include="SubCode_002_01.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="SubCode_002_01.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
