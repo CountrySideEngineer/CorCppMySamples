@@ -8,8 +8,7 @@
 #include <iostream>
 #include <Windows.h>
 #include <tchar.h>
-
-int SubFunction_002_01(int input_002_01);
+#include "SubCode_002_01.h"
 
 /**
  * @fn	SubFunction_001_01
