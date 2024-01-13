@@ -10,6 +10,10 @@
 #include <tchar.h>
 #include "SubCode_002_01.h"
 
+int SubFunction_001_01(int input1, int input2);
+void SubFunction_001_02(void);
+int SubFunction_001_03(int input_001_002);
+
 /**
  * @fn	SubFunction_001_01
  * @brief	Sample function No.001.
@@ -45,4 +49,9 @@ int SubFunction_001_03(int input_001_002)
 	int res = SubFunction_002_01(input_001_002);
 
 	return res;
+}
+
+int SubFunction_001_04(int input2, int input1)
+{
+	return (input1 + input2);
 }
