@@ -24,6 +24,9 @@
     <ClCompile Include="SubCode_002_01.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="SubCode_003_01.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SubCode_002_01.h">
