@@ -39,7 +39,7 @@ void SubFunction_001_02(void)
 
 /**
  * @fn	SubFunction_001_03
- * @brief	Sampel function which has an argument.
+ * @brief	Sample function which has an argument.
  * 
  * @param	input_001_002	Input value to this method.
  * @retval	
