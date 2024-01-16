@@ -141,9 +141,11 @@
   <ItemGroup>
     <ClCompile Include="DoxygenSample_002.cpp" />
     <ClCompile Include="SampleClass_001.cpp" />
+    <ClCompile Include="SampleClass_002.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SampleClass_001.h" />
+    <ClInclude Include="SampleClass_002.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
