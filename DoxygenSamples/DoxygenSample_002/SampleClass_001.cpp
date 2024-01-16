@@ -30,7 +30,7 @@ void SampleClass_001::SubFunction_001_02(void)
  * @fn	SubFunction_001_03
  * @brief	Sample function which has an argument.
  *
- * @param	input_001_002	Input value to this method.
+ * @param	input_001_003	Input value to this method.
  * @retval
  */
 int SampleClass_001::SubFunction_001_03(int input_001_003)
@@ -81,8 +81,8 @@ int SampleClass_001::SubFunction_001_06(int input_001_06_01, int input_001_06_02
  * @fn	SubFunction_001_07
  * @brief	Sample function which has an argument.
  *
- * @param	input_001_06_01	Input value 1.
- * @param	input_001_06_02	Input value 2.
+ * @param	input_001_07_01	Input value 1.
+ * @param	input_001_07_02	Input value 2.
  * @retval
  */
 int SampleClass_001::SubFunction_001_07(int input_001_07_01, int input_001_07_02)

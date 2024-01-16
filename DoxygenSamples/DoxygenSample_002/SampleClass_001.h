@@ -16,13 +16,13 @@ public:
 	}
 		
 protected:
-	int SubFunction_001_03(int input_001_002);
+	int SubFunction_001_03(int input_001_003);
 	int SubFunction_001_04(int input2, int input1);
 
 private:
-	int SubFunction_001_05(int input2, int input1);
-	int SubFunction_001_06(int input2, int input1);
-	static int SubFunction_001_07(int input_001_06_01, int input_001_06_02);
+	int SubFunction_001_05(int input_001_05_01, int input_001_05_02);
+	int SubFunction_001_06(int input_001_06_01, int input_001_06_02);
+	static int SubFunction_001_07(int input_001_07_01, int input_001_07_02);
 
 private:
 	int m_SampleMember_001;
