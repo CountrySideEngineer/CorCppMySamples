@@ -3,7 +3,7 @@ SELECT
 	memberdef.type AS TYPE,
 	memberdef.name AS FUNC_NAME,
 	memberdef.argsstring AS ARGUMENTS,
-	compounddef.name AS FILE_NAME,
+	compounddef.name AS FILE_NAME
 FROM 
 	memberdef
 LEFT JOIN compounddef
