@@ -5,8 +5,7 @@ SELECT
 	memberdef.name AS FUNC_NAME,
 	memberdef.type AS FUNC_TYPE,
 	memberdef.argsstring AS FUNC_ARG,
-	memberdef.definition AS FUNC_DEF,
-	memberdef.argsstring AS FUNC_ARGS
+	memberdef.definition AS FUNC_DEF
 FROM
 	memberdef
 LEFT JOIN compounddef
