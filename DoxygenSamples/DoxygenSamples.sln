@@ -5,6 +5,8 @@ VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DoxygenSample_001", "DoxygenSample_001\DoxygenSample_001.vcxproj", "{F8808FA9-3A0D-40CC-8FF6-852EC8835016}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DoxygenSample_002", "DoxygenSample_002\DoxygenSample_002.vcxproj", "{CB28314F-525B-4DA1-B35B-BFCEECDBEDE1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{F8808FA9-3A0D-40CC-8FF6-852EC8835016}.Release|x64.Build.0 = Release|x64
 		{F8808FA9-3A0D-40CC-8FF6-852EC8835016}.Release|x86.ActiveCfg = Release|Win32
 		{F8808FA9-3A0D-40CC-8FF6-852EC8835016}.Release|x86.Build.0 = Release|Win32
+		{CB28314F-525B-4DA1-B35B-BFCEECDBEDE1}.Debug|x64.ActiveCfg = Debug|x64
+		{CB28314F-525B-4DA1-B35B-BFCEECDBEDE1}.Debug|x64.Build.0 = Debug|x64
+		{CB28314F-525B-4DA1-B35B-BFCEECDBEDE1}.Debug|x86.ActiveCfg = Debug|Win32
+		{CB28314F-525B-4DA1-B35B-BFCEECDBEDE1}.Debug|x86.Build.0 = Debug|Win32
+		{CB28314F-525B-4DA1-B35B-BFCEECDBEDE1}.Release|x64.ActiveCfg = Release|x64
+		{CB28314F-525B-4DA1-B35B-BFCEECDBEDE1}.Release|x64.Build.0 = Release|x64
+		{CB28314F-525B-4DA1-B35B-BFCEECDBEDE1}.Release|x86.ActiveCfg = Release|Win32
+		{CB28314F-525B-4DA1-B35B-BFCEECDBEDE1}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

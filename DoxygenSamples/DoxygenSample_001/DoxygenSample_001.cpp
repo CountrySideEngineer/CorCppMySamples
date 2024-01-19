@@ -9,6 +9,8 @@
 #include <Windows.h>
 #include <tchar.h>
 
+int SampleGlobalValue = 0;
+
 int SubFunction_001_01(int input1, int input2);
 void SubFunction_001_02(void);
 int SubFunction_001_03(int input_001_002);
@@ -28,6 +30,8 @@ int main()
 
 	SubFunction_001_02();
 	SubFunction_001_03(result);
+
+	SampleGlobalValue = result;
 
 	return 0;
 }
