@@ -10,7 +10,7 @@
 #include <tchar.h>
 
 int SampleGlobalVariableArray_001[10] = { 0 };
-int SampleGlobalVariable = 0;
+int SampleGlobalVariable_001 = 0;
 
 extern int SampleGlobalVariableArray_002[];
 extern int SampleGlobalVariable_002;
