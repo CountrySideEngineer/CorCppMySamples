@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gMockSample_001", "gMockSam
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gMockSample_002", "gMockSample_002\gMockSample_002.vcxproj", "{113E99B4-5DD9-4266-B0C7-4F0931D127CE}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gMockSample_003", "gMockSample_003\gMockSample_003.vcxproj", "{F4FA529C-8CC9-455A-A17D-49A661418A2F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -31,6 +33,14 @@ Global
 		{113E99B4-5DD9-4266-B0C7-4F0931D127CE}.Release|x64.Build.0 = Release|x64
 		{113E99B4-5DD9-4266-B0C7-4F0931D127CE}.Release|x86.ActiveCfg = Release|Win32
 		{113E99B4-5DD9-4266-B0C7-4F0931D127CE}.Release|x86.Build.0 = Release|Win32
+		{F4FA529C-8CC9-455A-A17D-49A661418A2F}.Debug|x64.ActiveCfg = Debug|x64
+		{F4FA529C-8CC9-455A-A17D-49A661418A2F}.Debug|x64.Build.0 = Debug|x64
+		{F4FA529C-8CC9-455A-A17D-49A661418A2F}.Debug|x86.ActiveCfg = Debug|Win32
+		{F4FA529C-8CC9-455A-A17D-49A661418A2F}.Debug|x86.Build.0 = Debug|Win32
+		{F4FA529C-8CC9-455A-A17D-49A661418A2F}.Release|x64.ActiveCfg = Release|x64
+		{F4FA529C-8CC9-455A-A17D-49A661418A2F}.Release|x64.Build.0 = Release|x64
+		{F4FA529C-8CC9-455A-A17D-49A661418A2F}.Release|x86.ActiveCfg = Release|Win32
+		{F4FA529C-8CC9-455A-A17D-49A661418A2F}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
