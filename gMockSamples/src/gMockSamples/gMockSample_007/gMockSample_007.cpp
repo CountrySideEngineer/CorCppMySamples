@@ -55,9 +55,3 @@ TEST(BufferUserTest, DoublePointerArgument)
 	BufferUser user(mock);
 	EXPECT_EQ(user.UseBuffer(), 6); // 1+2+3=6
 }
-
-int main(int argc, char** argv)
-{
-	::testing::InitGoogleMock(&argc, argv);
-	return RUN_ALL_TESTS();
-}
