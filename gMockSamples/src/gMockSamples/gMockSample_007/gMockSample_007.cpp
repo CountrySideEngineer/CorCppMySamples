@@ -44,7 +44,7 @@ TEST(BufferUserTest, DoublePointerArgument)
 	MockAllocator mock;
 
 	// モックが返す配列データ（静的領域でOK）
-	static int test_data[3] = { 1, 2, 3 };
+	int test_data[3] = { 1, 2, 3 };
 
 	// out_ptr（int**）の指す先に test_data のアドレスをセット
 	EXPECT_CALL(mock, AllocateBuffer(_))
