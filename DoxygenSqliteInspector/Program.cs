@@ -23,7 +23,29 @@ int idxJson = Array.FindIndex(args, a => string.Equals(a, "--json", StringCompar
 
 var efHasFunction = hasFunction || hasShortF; // treat -f as a function request
 
-// Validate argument combinations
+static bool TryGetArgumentValue(string[] args, string[] names, out string? value)
+{
+    value = null;
+    for (int i = 0; i < args.Length; i++)
+    {
+        foreach (var name in names)
+        {
+            if (string.Equals(args[i], name, StringComparison.OrdinalIgnoreCase))
+            {
+                if (i + 1 < args.Length)
+                {
+                    value = args[i + 1];
+                    return true;
+                }
+
+                return false;
+            }
+        }
+    }
+
+    return false;
+}
+
 if (hasJson && !efHasFunction && !hasFile)
 {
     Console.Error.WriteLine("Argument error: 'json' must be used with either --file or --function.");
@@ -46,7 +68,19 @@ if (hasJson)
     }
 }
 
-await using var context = new DoxygenContext();
+if (!TryGetArgumentValue(args, new[] { "--db", "--database" }, out var dbPath) || string.IsNullOrWhiteSpace(dbPath))
+{
+    Console.Error.WriteLine("Argument error: --db <path> or --database <path> is required.");
+    return;
+}
+
+if (!File.Exists(dbPath))
+{
+    Console.Error.WriteLine($"Database file not found: {dbPath}");
+    return;
+}
+
+await using var context = new DoxygenContext(dbPath);
 
 var meta = await context.Meta.AsNoTracking().FirstOrDefaultAsync();
 if (meta is null)

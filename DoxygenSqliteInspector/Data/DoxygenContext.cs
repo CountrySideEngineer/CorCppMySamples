@@ -8,13 +8,17 @@ namespace DoxygenSqliteInspector.Data;
 
 public partial class DoxygenContext : DbContext
 {
-    public DoxygenContext()
+    private readonly string _dbPath;
+
+    public DoxygenContext(string dbPath)
     {
+        _dbPath = dbPath ?? throw new ArgumentNullException(nameof(dbPath));
     }
 
     public DoxygenContext(DbContextOptions<DoxygenContext> options)
         : base(options)
     {
+        throw new InvalidOperationException("DoxygenContext requires a database file path. Use DoxygenContext(string dbPath).");
     }
 
     public virtual DbSet<ArgumentXref> ArgumentXrefs { get; set; }
@@ -60,8 +64,7 @@ public partial class DoxygenContext : DbContext
     public virtual DbSet<Xref> Xrefs { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlite("Data Source=..\\doxygen_sqlite3.db");
+        => optionsBuilder.UseSqlite($"Data Source={_dbPath}");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
