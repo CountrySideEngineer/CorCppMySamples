@@ -46,7 +46,7 @@ static bool TryGetArgumentValue(string[] args, string[] names, out string? value
     return false;
 }
 
-if (hasJson && !efHasFunction && !hasFile)
+if (hasJson && !efHasFunction && !hasFile && !hasShortF)
 {
     Console.Error.WriteLine("Argument error: 'json' must be used with either --file or --function.");
     return;
