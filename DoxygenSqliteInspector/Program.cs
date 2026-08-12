@@ -1,16 +1,11 @@
-﻿using System.IO;
-using System.Linq;
-using System.Text.Json;
-using DoxygenSqliteInspector.Data;
+﻿using System.Text.Json;
+using DoxygenSqliteInspector;
 using DoxygenSqliteInspector.Models;
-using Microsoft.EntityFrameworkCore;
+using DoxygenSqliteInspector.Repositories;
+using DoxygenSqliteInspector.Services;
 
 Console.WriteLine("Doxygen SQLite DB Inspector using EF Core");
 
-// Command-line args rules:
-// - "json" must be specified together with either --file or --function
-// - "json" must appear after the --file or --function argument
-// - --file and --function must not be used together
 var hasFunction = args.Any(a => string.Equals(a, "--function", StringComparison.OrdinalIgnoreCase));
 var hasFile = args.Any(a => string.Equals(a, "--file", StringComparison.OrdinalIgnoreCase));
 var hasJson = args.Any(a => string.Equals(a, "--json", StringComparison.OrdinalIgnoreCase));
@@ -21,7 +16,7 @@ int idxShortF = Array.FindIndex(args, a => string.Equals(a, "-f", StringComparis
 int idxFile = Array.FindIndex(args, a => string.Equals(a, "--file", StringComparison.OrdinalIgnoreCase));
 int idxJson = Array.FindIndex(args, a => string.Equals(a, "--json", StringComparison.OrdinalIgnoreCase));
 
-var efHasFunction = hasFunction || hasShortF; // treat -f as a function request
+var efHasFunction = hasFunction || hasShortF;
 
 static bool TryGetArgumentValue(string[] args, string[] names, out string? value)
 {
@@ -80,194 +75,154 @@ if (!File.Exists(dbPath))
     return;
 }
 
-await using var context = new DoxygenContext(dbPath);
-
-var meta = await context.Meta.AsNoTracking().FirstOrDefaultAsync();
-if (meta is null)
+try
 {
-    Console.WriteLine("No meta information found in the database.");
-    return;
-}
+    var clientOptions = new DoxygenInspectorOptions { DatabasePath = dbPath };
+    var inspectorClient = new DoxygenInspectorClient(clientOptions);
 
-Console.WriteLine("Meta information:");
-Console.WriteLine($"  Project: {meta.ProjectName}");
-Console.WriteLine($"  Version: {meta.ProjectNumber}");
-Console.WriteLine($"  Doxygen: {meta.DoxygenVersion}");
-Console.WriteLine($"  Schema: {meta.SchemaVersion}");
-Console.WriteLine($"  Generated: {meta.GeneratedAt} {meta.GeneratedOn}");
-Console.WriteLine();
+    var meta = await inspectorClient.GetMetaAsync();
+    Console.WriteLine("Meta information:");
+    Console.WriteLine($"  Project: {meta.ProjectName}");
+    Console.WriteLine($"  Version: {meta.ProjectNumber}");
+    Console.WriteLine($"  Doxygen: {meta.DoxygenVersion}");
+    Console.WriteLine($"  Schema: {meta.SchemaVersion}");
+    Console.WriteLine($"  Generated: {meta.GeneratedAt} {meta.GeneratedOn}");
+    Console.WriteLine();
 
-if (hasFile)
-{
-    var files = await context.Paths
-        .AsNoTracking()
-        .OrderBy(p => p.Name)
-        .ToListAsync();
-
-    Console.WriteLine($"File count: {files.Count}");
-    foreach (var file in files)
+    if (hasFile)
     {
-        Console.WriteLine($"  - {file.Name}");
-    }
-    if (hasJson)
-    {
-        var json = JsonSerializer.Serialize(files.Select(p => new { p.Rowid, p.Name }), new JsonSerializerOptions { WriteIndented = true });
-        var outName = "file.json";
-        await File.WriteAllTextAsync(outName, json);
-        Console.WriteLine($"Wrote JSON to {outName}");
+        var files = await inspectorClient.GetFilesAsync();
+
+        Console.WriteLine($"File count: {files.Count}");
+        foreach (var file in files)
+        {
+            Console.WriteLine($"  - {file.Name}");
+        }
+
+        if (hasJson)
+        {
+            var json = JsonSerializer.Serialize(files.Select(p => new { p.Rowid, p.Name }), new JsonSerializerOptions { WriteIndented = true });
+            var outName = "file.json";
+            await File.WriteAllTextAsync(outName, json);
+            Console.WriteLine($"Wrote JSON to {outName}");
+        }
+
+        return;
     }
 
-    return;
-}
+    var functions = await inspectorClient.GetFunctionDetailsAsync();
 
-var functions = await context.Memberdefs
-    .AsNoTracking()
-    .Where(m => m.Kind == "function")
-    .Include(m => m.File)
-    .Include(m => m.Bodyfile)
-    .Include(m => m.MemberdefParams).ThenInclude(mp => mp.Param)
-    .OrderBy(m => m.Name)
-    .ToListAsync();
+    if (efHasFunction)
+    {
+        Console.WriteLine($"Function count: {functions.Count}");
+        foreach (var function in functions)
+        {
+            Console.WriteLine($"  - {GetDisplayName(function)}");
+        }
 
-var xrefs = await context.Xrefs
-    .AsNoTracking()
-    .Include(x => x.SrcRow).ThenInclude(r => r.Memberdef)
-    .Include(x => x.DstRow).ThenInclude(r => r.Memberdef)
-    .ToListAsync();
+        if (hasJson)
+        {
+            var outList = functions.Select(function => new
+            {
+                Rowid = function.Rowid,
+                Name = function.Name,
+                Definition = function.Definition,
+                ReturnType = function.ReturnType,
+                DeclaredIn = function.DeclaredIn,
+                ImplementedIn = function.ImplementedIn,
+                Scope = function.Scope,
+                Line = function.Line,
+                Parameters = function.Parameters.Select(p => new { Type = p.Type, Name = p.Name }),
+                Callees = function.Callees,
+                Callers = function.Callers
+            }).ToList();
 
-if (efHasFunction)
-{
+            var json = JsonSerializer.Serialize(outList, new JsonSerializerOptions { WriteIndented = true });
+            var outName = "--function.json";
+            if (hasShortF && idxShortF >= 0 && idxJson == idxShortF + 1)
+            {
+                outName = "function_detail.json";
+            }
+
+            await File.WriteAllTextAsync(outName, json);
+            Console.WriteLine($"Wrote JSON to {outName}");
+        }
+
+        return;
+    }
+
     Console.WriteLine($"Function count: {functions.Count}");
+    Console.WriteLine();
+
+    if (!functions.Any())
+    {
+        Console.WriteLine("No functions found in memberdef table.");
+        return;
+    }
+
     foreach (var function in functions)
     {
-        Console.WriteLine($"  - {GetDisplayName(function)}");
-    }
+        Console.WriteLine($"Function: {GetDisplayName(function)}");
+        Console.WriteLine($"  Function name: {function.Name}");
+        Console.WriteLine($"  Definition: {function.Definition ?? "<none>"}");
+        Console.WriteLine($"  Return type: {function.ReturnType ?? "<unknown>"}");
+        Console.WriteLine($"  Declared in file: {function.DeclaredIn ?? "<unknown>"}");
+        Console.WriteLine($"  Implementation file: {function.ImplementedIn ?? "<unknown>"}");
+        Console.WriteLine($"  Scope: {function.Scope ?? "<none>"}");
+        Console.WriteLine($"  Line: {function.Line}");
 
-    if (hasJson)
-    {
-        var outList = functions.Select(function => new
+        if (function.Parameters.Count > 0)
         {
-            Rowid = function.Rowid,
-            Name = function.Name,
-            Definition = function.Definition,
-            ReturnType = function.Type,
-            DeclaredIn = function.File?.Name,
-            ImplementedIn = function.Bodyfile?.Name ?? function.File?.Name,
-            Scope = function.Scope,
-            Line = function.Line,
-            Parameters = function.MemberdefParams.Select(mp => new { Type = mp.Param?.Type, Name = mp.Param?.Declname ?? mp.Param?.Defname }),
-            Callees = xrefs.Where(x => x.SrcRow.Memberdef != null && x.SrcRow.Memberdef.Rowid == function.Rowid).Select(x => new { Name = x.DstRow.Memberdef?.Definition ?? x.DstRow.Memberdef?.Name, Context = x.Context }),
-            Callers = xrefs.Where(x => x.DstRow.Memberdef != null && x.DstRow.Memberdef.Rowid == function.Rowid).Select(x => new { Name = x.SrcRow.Memberdef?.Definition ?? x.SrcRow.Memberdef?.Name, Context = x.Context })
-        }).ToList();
-
-        var json = JsonSerializer.Serialize(outList, new JsonSerializerOptions { WriteIndented = true });
-        var outName = "--function.json";
-        // If user used -f followed immediately by --json, write to function_detail.json
-        if (hasShortF && idxShortF >= 0 && idxJson == idxShortF + 1)
-        {
-            outName = "function_detail.json";
+            Console.WriteLine("  Parameters:");
+            foreach (var param in function.Parameters)
+            {
+                Console.WriteLine($"    - Type: {param.Type ?? "<unknown>"}, Name: {param.Name ?? "<unnamed>"}");
+            }
         }
-        await File.WriteAllTextAsync(outName, json);
-        Console.WriteLine($"Wrote JSON to {outName}");
+        else
+        {
+            Console.WriteLine("  Parameters: <none>");
+        }
+
+        Console.WriteLine($"  Calls: {function.Callees.Count}");
+        foreach (var callee in function.Callees)
+        {
+            Console.WriteLine($"    - {callee.Name ?? "<unknown>"} (context={callee.Context ?? "<unknown>"})");
+        }
+
+        Console.WriteLine($"  Called by: {function.Callers.Count}");
+        foreach (var caller in function.Callers)
+        {
+            Console.WriteLine($"    - {caller.Name ?? "<unknown>"} (context={caller.Context ?? "<unknown>"})");
+        }
+
+        Console.WriteLine();
     }
 
+    Console.WriteLine("Function inspection complete.");
+}
+catch (InvalidOperationException ex)
+{
+    Console.WriteLine(ex.Message);
     return;
 }
 
-Console.WriteLine($"Function count: {functions.Count}");
-Console.WriteLine();
-
-if (!functions.Any())
+static string GetDisplayName(DoxygenFunctionDetail function)
 {
-    Console.WriteLine("No functions found in memberdef table.");
-    return;
+    if (!string.IsNullOrWhiteSpace(function.Definition))
+    {
+        return function.Definition;
+    }
+
+    var args = function.Parameters.Count > 0
+        ? string.Join(", ", function.Parameters.Select(p => FormatParam(p.Type, p.Name)))
+        : string.Empty;
+
+    return $"{function.ReturnType ?? "<unknown>"} {function.Name}({args})".Trim();
 }
 
-foreach (var function in functions)
+static string FormatParam(string? type, string? name)
 {
-    Console.WriteLine($"Function: {GetDisplayName(function)}");
-    Console.WriteLine($"  Function name: {function.Name}");
-    Console.WriteLine($"  Definition: {function.Definition ?? "<none>"}");
-    Console.WriteLine($"  Return type: {function.Type ?? "<unknown>"}");
-    Console.WriteLine($"  Declared in file: {function.File?.Name ?? "<unknown>"}");
-    Console.WriteLine($"  Implementation file: {function.Bodyfile?.Name ?? function.File?.Name ?? "<unknown>"}");
-    Console.WriteLine($"  Scope: {function.Scope ?? "<none>"}");
-    Console.WriteLine($"  Line: {function.Line}");
-
-    var parameters = function.MemberdefParams
-        .Select(mp => mp.Param)
-        .Where(p => p is not null)
-        .ToList();
-
-    if (parameters.Count > 0)
-    {
-        Console.WriteLine("  Parameters:");
-        foreach (var param in parameters)
-        {
-            Console.WriteLine($"    - Type: {param.Type ?? "<unknown>"}, Name: {param.Declname ?? param.Defname ?? "<unnamed>"}");
-        }
-    }
-    else if (!string.IsNullOrWhiteSpace(function.Argsstring))
-    {
-        Console.WriteLine($"  Parameters: {function.Argsstring}");
-    }
-    else
-    {
-        Console.WriteLine("  Parameters: <none>");
-    }
-
-    var callees = xrefs
-        .Where(x => x.SrcRow.Memberdef != null && x.SrcRow.Memberdef.Rowid == function.Rowid)
-        .Select(x => new { x.DstRow.Memberdef, x.Context })
-        .Where(x => x.Memberdef != null)
-        .Select(x => new { Memberdef = x.Memberdef!, x.Context })
-        .ToList();
-
-    var callers = xrefs
-        .Where(x => x.DstRow.Memberdef != null && x.DstRow.Memberdef.Rowid == function.Rowid)
-        .Select(x => new { x.SrcRow.Memberdef, x.Context })
-        .Where(x => x.Memberdef != null)
-        .Select(x => new { Memberdef = x.Memberdef!, x.Context })
-        .ToList();
-
-    Console.WriteLine($"  Calls: {callees.Count}");
-    foreach (var x in callees)
-    {
-        Console.WriteLine($"    - {GetDisplayName(x.Memberdef)} (context={x.Context})");
-    }
-
-    Console.WriteLine($"  Called by: {callers.Count}");
-    foreach (var x in callers)
-    {
-        Console.WriteLine($"    - {GetDisplayName(x.Memberdef)} (context={x.Context})");
-    }
-
-    Console.WriteLine();
-}
-
-Console.WriteLine("Function inspection complete.");
-
-static string GetDisplayName(Memberdef memberdef)
-{
-    if (!string.IsNullOrWhiteSpace(memberdef.Definition))
-    {
-        return memberdef.Definition;
-    }
-
-    var args = !string.IsNullOrWhiteSpace(memberdef.Argsstring)
-        ? memberdef.Argsstring
-        : string.Join(", ", memberdef.MemberdefParams.Select(mp => FormatParam(mp.Param)));
-
-    return $"{memberdef.Type ?? "<unknown>"} {memberdef.Name}({args})".Trim();
-}
-
-static string FormatParam(Param? param)
-{
-    if (param is null)
-    {
-        return "<unknown>";
-    }
-
-    var name = param.Declname ?? param.Defname ?? "<unnamed>";
-    return $"{param.Type ?? "<unknown>"} {name}".Trim();
+    var paramName = name ?? "<unnamed>";
+    return $"{type ?? "<unknown>"} {paramName}".Trim();
 }
