@@ -1,6 +1,5 @@
 using DoxygenSqliteInspector.Data;
 using DoxygenSqliteInspector.Lib.Models;
-using DoxygenSqliteInspector.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace DoxygenSqliteInspector.Lib.Repositories;

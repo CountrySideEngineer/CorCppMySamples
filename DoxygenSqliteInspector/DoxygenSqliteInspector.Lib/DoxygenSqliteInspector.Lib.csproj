@@ -16,16 +16,4 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.11" />
   </ItemGroup>
 
-  <!-- Reference only Data and base Models (not DoxygenModels) -->
-  <ItemGroup>
-    <Compile Include="..\Data\**\*.cs" Link="Data\%(Filename)%(Extension)" />
-    <Compile Include="..\Models\Memberdef.cs" Link="Models\Memberdef.cs" />
-    <Compile Include="..\Models\Metum.cs" Link="Models\Metum.cs" />
-    <Compile Include="..\Models\Path.cs" Link="Models\Path.cs" />
-    <Compile Include="..\Models\Param.cs" Link="Models\Param.cs" />
-    <Compile Include="..\Models\MemberdefParam.cs" Link="Models\MemberdefParam.cs" />
-    <Compile Include="..\Models\Refid.cs" Link="Models\Refid.cs" />
-    <Compile Include="..\Models\Xref.cs" Link="Models\Xref.cs" />
-  </ItemGroup>
-
 </Project>
