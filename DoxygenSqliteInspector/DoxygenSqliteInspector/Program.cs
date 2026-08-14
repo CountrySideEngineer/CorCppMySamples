@@ -1,8 +1,8 @@
 ﻿using System.Text.Json;
-using DoxygenSqliteInspector;
-using DoxygenSqliteInspector.Models;
-using DoxygenSqliteInspector.Repositories;
-using DoxygenSqliteInspector.Services;
+using DoxygenSqliteInspector.Lib;
+using DoxygenSqliteInspector.Lib.Models;
+using DoxygenSqliteInspector.Lib.Repositories;
+using DoxygenSqliteInspector.Lib.Services;
 
 Console.WriteLine("Doxygen SQLite DB Inspector using EF Core");
 
